@@ -30,12 +30,12 @@ async def call_open_movie_database(session: aiohttp.ClientSession, input_data, i
 async def main():
     session = PromptSession()
     api_token = await session.prompt_async('Paste API token: ', is_password=True)
-    year_to_search = await session.prompt_async('What year to search for movies: ', is_password=False)
+    movie_key_word = await session.prompt_async('Movie keyword: ', is_password=False)
     logger.info('Beginning api calls')
     input_data = {
         'apikey': api_token,
-        'type': 'movies',
-        'y': year_to_search,
+        'type': 'movie',
+        's': movie_key_word,
         'page': None
     }
     async with aiohttp.ClientSession() as session:
