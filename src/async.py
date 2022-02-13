@@ -1,18 +1,11 @@
 import aiohttp
 from prompt_toolkit import PromptSession
 import asyncio
-from loguru import logger
-import sys
+import structlog
 
 
-logger.remove()
-logger.add(
-    sys.stdout,
-    colorize=True,
-    format="<green>{time}</green> <level>{message}</level>",
-    enqueue=True
-)
-
+structlog.configure(wrapper_class=structlog.stdlib.AsyncBoundLogger)
+logger: structlog.stdlib.AsyncBoundLogger = structlog.get_logger()
 
 async def call_open_movie_database(session: aiohttp.ClientSession, input_data, id):
     try:
@@ -21,17 +14,17 @@ async def call_open_movie_database(session: aiohttp.ClientSession, input_data, i
         async with session.get('http://www.omdbapi.com/', params=d) as rsp:
             result = await rsp.json()
             status = rsp.status
-            logger.info(f'Result finished in with status of {status}')
+            await logger.info(f'Result finished in with status of {status}')
             return result
-    except Exception as ex:
-        logger.error('Async task failed')
+    except Exception:
+        await logger.error('Async task failed', exc_info=True)
 
 
 async def main():
     session = PromptSession()
     api_token = await session.prompt_async('Paste API token: ', is_password=True)
     movie_key_word = await session.prompt_async('Movie keyword: ', is_password=False)
-    logger.info('Beginning api calls')
+    await logger.info('Beginning api calls')
     input_data = {
         'apikey': api_token,
         'type': 'movie',
@@ -46,7 +39,7 @@ async def main():
         ) for i in range(20)]
         aggregate = await asyncio.gather(*pending)
         for i in aggregate:
-            logger.info(i)
+            await logger.info(i)
 
 
 if __name__ == '__main__':
