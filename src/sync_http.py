@@ -2,10 +2,13 @@ import requests
 from prompt_toolkit import PromptSession
 import concurrent.futures
 import structlog
+import logging
 
 
-structlog.configure(wrapper_class=structlog.stdlib.BoundLogger)
-logger: structlog.stdlib.BoundLogger = structlog.get_logger()
+logger: structlog.stdlib.BoundLogger = structlog.wrap_logger(
+    logging.getLogger(__name__),
+    wrapper_class=structlog.stdlib.BoundLogger
+)
 
 
 def call_open_movie_database(input_data, id) -> dict:

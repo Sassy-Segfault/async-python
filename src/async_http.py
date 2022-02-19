@@ -2,10 +2,13 @@ import aiohttp
 from prompt_toolkit import PromptSession
 import asyncio
 import structlog
+import logging
 
 
-structlog.configure(wrapper_class=structlog.stdlib.AsyncBoundLogger)
-logger: structlog.stdlib.AsyncBoundLogger = structlog.get_logger()
+logger: structlog.stdlib.AsyncBoundLogger = structlog.wrap_logger(
+    logging.getLogger(__name__),
+    wrapper_class=structlog.stdlib.AsyncBoundLogger
+)
 
 async def call_open_movie_database(session: aiohttp.ClientSession, input_data, id):
     try:
