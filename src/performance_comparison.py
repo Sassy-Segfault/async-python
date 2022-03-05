@@ -13,7 +13,7 @@ structlog.configure(wrapper_class=structlog.stdlib.BoundLogger)
 logger: structlog.stdlib.BoundLogger = structlog.get_logger()
 
 _NUMBER_OF_PAGES = 20
-_NUMBER_OF_ITERATIONS = 20
+_NUMBER_OF_ITERATIONS = 100
 
 
 def run_sync_code(input_data: dict):
