@@ -3,7 +3,13 @@ from prompt_toolkit import PromptSession
 import concurrent.futures
 import structlog
 import logging
+import sys
 
+
+logging.basicConfig(
+    stream=sys.stdout,
+    level=logging.INFO,
+)
 
 logger: structlog.stdlib.BoundLogger = structlog.wrap_logger(
     logging.getLogger(__name__),
